@@ -1,0 +1,86 @@
+
+Hardware
+========
+    CPU: RV32E
+
+Memory Layout
+=============
+
+    begin   end     size
+    000000  0fffff    1M    ROM (64k)
+    100000  1fffff    1M    undefined
+    200000  3fffff    2M    control registers
+    400000  47ffff  512k    streaming RAM
+    600000  7fffff    2M    work RAM
+    800000  bfffff    4M    cartridge
+    c00000  cfffff    1M    video RAM           (16-bit access only)
+
+Control Registers
+=================
+
+2000xxh (SYS)
+200000h - SYS.RESETCR - 16bit
+      0 R/W     cpu reset address (0 = 000000h, 1 = 800000h)
+      1 -/W     halt on reset
+      7 R/-     debug unit
+
+200002h - SYS.POWER - 16bit
+      0 R/W     cartridge power enable
+      1 R/W     video power enable
+      2 R/W     XPoly engine enable
+
+200004h - SYS.UARTCFG - 16bit
+    0-9 R/W     divisor (baud = 1M / divisor)
+     14 R/W     enable Rx interrupt
+     15 R/W     enable (clear reset)
+
+200006h - SYS.UARTDAT - 16bit
+    0-7 R       read Rx data
+    0-7   W     write Tx data
+     14 R       unsent Tx data present (cleared automatically)
+     15 R       unread Rx data present (cleared upon reading)
+
+NOTE: UART in vs2 is very limited, max speed is 57.6k, on orangeBox it goes into backside service connector (5v single-ended!)
+
+2002xxh (VIDEO)
+200200h - VCR - 16bit
+      0 R/W     display enable (0 = reset)
+      1 R/W     2D engine enable
+      2 R/W     2D engine memory gate
+    3-5 R/W     display mode
+                mode 0: 640x480, layers 0, 1 (default)
+                mode 1: 320x480, layers 0-3
+                mode 2: 320x240, layers 0-3
+
+200202h - BGCOL - 16bit
+    0-4 R/W     Red
+   5-10 R/W     Green
+  11-15 R/W     Blue
+
+2004xxh (XPOLY)
+200400h - XP - 16bit
+    0-1 R/W     Output area
+
+2006xxh (STREAM)
+200600h Stream 1 FIFO Status - 16bit
+      0 R/-     PUSH Not empty
+      1 R/-     PUSH FIFO full
+      2 R/-     POLL Not empty
+      3 R/-     POLL FIFO overflow
+200602h Stream 2 FIFO Status - 16bit
+200604h Stream 3 FIFO Status - 16bit
+200606h Stream 4 FIFO Status - 16bit
+
+200608h Stream 1 FIFO
+20060Ah Stream 2 FIFO
+20060Ch Stream 3 FIFO
+20060Eh Stream 4 FIFO
+
+Video Operations
+================
+10Fm - set display mode (0 - 320x240x16)
+100x - enable
+101x - disable
+1020 - clear using vertex color
+2000 cccc - set vertex color
+400p xxxx yyyy zzzz - push vertex (p: 0-point, 1-line, 2-triangle)

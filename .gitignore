@@ -1,0 +1,9 @@
+/build_verilator/
+/verilator_bin/
+/verilator/
+framebuffer.ppm
+*.bin
+*.log
+test_tb
+
+!*.expected.*

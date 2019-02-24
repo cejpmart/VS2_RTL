@@ -1,0 +1,17 @@
+BOOTLDR V: 00000401
+
+ODFS.OK
+KERNEL.OK
+BOOT 007F1000
+
+ORANGE MICROKERNEL
+Version: 00010001
+Loaded drivers: 00000002
+00000001 007F1890
+00000002 007F1718
+Detecting drives
+A: FS installed
+Shell Starting.
+
+File_Open fail: A/Test1 FFFFFFFA
+SHSetMenuBarApp called

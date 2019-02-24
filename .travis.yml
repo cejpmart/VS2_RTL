@@ -1,0 +1,18 @@
+language: cpp
+
+addons:
+  apt:
+    packages:
+      - bison
+      - flex
+      - git
+
+before_install:
+  - "[ -d verilator_bin/bin ] || ./compile_verilator.sh"
+
+cache:
+  directories:
+    - verilator_bin
+
+script:
+  - make && make test
